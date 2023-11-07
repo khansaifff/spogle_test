@@ -19,6 +19,7 @@ import {
   IsInt,
 } from "class-validator";
 import { Type } from "class-transformer";
+import { User } from "../../user/base/User";
 
 @ObjectType()
 class Address {
@@ -107,6 +108,15 @@ class Address {
   @Type(() => Date)
   @Field(() => Date)
   updatedAt!: Date;
+
+  @ApiProperty({
+    required: false,
+    type: () => User,
+  })
+  @ValidateNested()
+  @Type(() => User)
+  @IsOptional()
+  userAddress?: User | null;
 }
 
 export { Address as Address };

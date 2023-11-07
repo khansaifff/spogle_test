@@ -56,6 +56,12 @@ export class AddressControllerBase {
               connect: data.address,
             }
           : undefined,
+
+        userAddress: data.userAddress
+          ? {
+              connect: data.userAddress,
+            }
+          : undefined,
       },
       select: {
         address: {
@@ -71,6 +77,12 @@ export class AddressControllerBase {
         isDefault: true,
         title: true,
         updatedAt: true,
+
+        userAddress: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
@@ -105,6 +117,12 @@ export class AddressControllerBase {
         isDefault: true,
         title: true,
         updatedAt: true,
+
+        userAddress: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
@@ -140,6 +158,12 @@ export class AddressControllerBase {
         isDefault: true,
         title: true,
         updatedAt: true,
+
+        userAddress: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
     if (result === null) {
@@ -177,6 +201,12 @@ export class AddressControllerBase {
                 connect: data.address,
               }
             : undefined,
+
+          userAddress: data.userAddress
+            ? {
+                connect: data.userAddress,
+              }
+            : undefined,
         },
         select: {
           address: {
@@ -192,6 +222,12 @@ export class AddressControllerBase {
           isDefault: true,
           title: true,
           updatedAt: true,
+
+          userAddress: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -235,6 +271,12 @@ export class AddressControllerBase {
           isDefault: true,
           title: true,
           updatedAt: true,
+
+          userAddress: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -276,6 +318,12 @@ export class AddressControllerBase {
         isDefault: true,
         title: true,
         updatedAt: true,
+
+        userAddress: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
     if (results === null) {

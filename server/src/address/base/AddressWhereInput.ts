@@ -18,6 +18,7 @@ import { AddressListRelationFilter } from "./AddressListRelationFilter";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { StringFilter } from "../../util/StringFilter";
 import { IntNullableFilter } from "../../util/IntNullableFilter";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
 
 @InputType()
 class AddressWhereInput {
@@ -99,6 +100,18 @@ class AddressWhereInput {
     nullable: true,
   })
   title?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => UserWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => UserWhereUniqueInput)
+  @IsOptional()
+  @Field(() => UserWhereUniqueInput, {
+    nullable: true,
+  })
+  userAddress?: UserWhereUniqueInput;
 }
 
 export { AddressWhereInput as AddressWhereInput };

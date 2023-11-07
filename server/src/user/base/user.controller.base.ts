@@ -27,6 +27,9 @@ import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
 import { UserFindManyArgs } from "./UserFindManyArgs";
 import { UserUpdateInput } from "./UserUpdateInput";
 import { User } from "./User";
+import { AddressFindManyArgs } from "../../address/base/AddressFindManyArgs";
+import { Address } from "../../address/base/Address";
+import { AddressWhereUniqueInput } from "../../address/base/AddressWhereUniqueInput";
 
 @swagger.ApiBearerAuth()
 @common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
@@ -50,7 +53,6 @@ export class UserControllerBase {
     return await this.service.create({
       data: data,
       select: {
-        address: true,
         createdAt: true,
         email: true,
         emailVerifiedAt: true,
@@ -86,7 +88,6 @@ export class UserControllerBase {
     return this.service.findMany({
       ...args,
       select: {
-        address: true,
         createdAt: true,
         email: true,
         emailVerifiedAt: true,
@@ -123,7 +124,6 @@ export class UserControllerBase {
     const result = await this.service.findOne({
       where: params,
       select: {
-        address: true,
         createdAt: true,
         email: true,
         emailVerifiedAt: true,
@@ -169,7 +169,6 @@ export class UserControllerBase {
         where: params,
         data: data,
         select: {
-          address: true,
           createdAt: true,
           email: true,
           emailVerifiedAt: true,
@@ -214,7 +213,6 @@ export class UserControllerBase {
       return await this.service.delete({
         where: params,
         select: {
-          address: true,
           createdAt: true,
           email: true,
           emailVerifiedAt: true,
@@ -239,5 +237,116 @@ export class UserControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/address")
+  @ApiNestedQuery(AddressFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Address",
+    action: "read",
+    possession: "any",
+  })
+  async findManyAddress(
+    @common.Req() request: Request,
+    @common.Param() params: UserWhereUniqueInput
+  ): Promise<Address[]> {
+    const query = plainToClass(AddressFindManyArgs, request.query);
+    const results = await this.service.findAddress(params.id, {
+      ...query,
+      select: {
+        address: {
+          select: {
+            id: true,
+          },
+        },
+
+        addressType: true,
+        createdAt: true,
+        customerId: true,
+        id: true,
+        isDefault: true,
+        title: true,
+        updatedAt: true,
+
+        userAddress: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/address")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async connectAddress(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: AddressWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      address: {
+        connect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/address")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async updateAddress(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: AddressWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      address: {
+        set: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/address")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectAddress(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: AddressWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      address: {
+        disconnect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

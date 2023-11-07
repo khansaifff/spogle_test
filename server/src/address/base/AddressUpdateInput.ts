@@ -15,6 +15,7 @@ import { AddressWhereUniqueInput } from "./AddressWhereUniqueInput";
 import { ValidateNested, IsOptional, IsString, IsInt } from "class-validator";
 import { Type } from "class-transformer";
 import { AddressUpdateManyWithoutAddressesInput } from "./AddressUpdateManyWithoutAddressesInput";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
 
 @InputType()
 class AddressUpdateInput {
@@ -85,6 +86,18 @@ class AddressUpdateInput {
     nullable: true,
   })
   title?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => UserWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => UserWhereUniqueInput)
+  @IsOptional()
+  @Field(() => UserWhereUniqueInput, {
+    nullable: true,
+  })
+  userAddress?: UserWhereUniqueInput | null;
 }
 
 export { AddressUpdateInput as AddressUpdateInput };

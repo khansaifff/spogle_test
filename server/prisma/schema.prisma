@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  address         Json?
+  address         Address[]
   createdAt       DateTime  @default(now())
   email           String?
   emailVerifiedAt DateTime?
@@ -38,14 +38,16 @@ model Profile {
 }
 
 model Address {
-  address     Address?  @relation(name: "AddressOnAddresses", fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  addressId   String?   @db.ObjectId
-  addresses   Address[] @relation(name: "AddressOnAddresses")
-  addressType String?
-  createdAt   DateTime  @default(now())
-  customerId  String?
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  isDefault   Int?
-  title       String?
-  updatedAt   DateTime  @updatedAt
+  address       Address?  @relation(name: "AddressOnAddresses", fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  addressId     String?   @db.ObjectId
+  addresses     Address[] @relation(name: "AddressOnAddresses")
+  addressType   String?
+  createdAt     DateTime  @default(now())
+  customerId    String?
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  isDefault     Int?
+  title         String?
+  updatedAt     DateTime  @updatedAt
+  userAddress   User?     @relation(fields: [userAddressId], references: [id])
+  userAddressId String?   @db.ObjectId
 }
