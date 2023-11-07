@@ -12,64 +12,48 @@ import { ACLModule } from "../../auth/acl.module";
 import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { map } from "rxjs";
-import { UserController } from "../user.controller";
-import { UserService } from "../user.service";
+import { AddressController } from "../address.controller";
+import { AddressService } from "../address.service";
 
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
+  addressType: "exampleAddressType",
   createdAt: new Date(),
-  email: "exampleEmail",
-  emailVerifiedAt: new Date(),
-  firstName: "exampleFirstName",
+  customerId: "exampleCustomerId",
   id: "exampleId",
-  isActive: 42,
-  lastName: "exampleLastName",
-  name: "exampleName",
-  password: "examplePassword",
+  isDefault: 42,
+  title: "exampleTitle",
   updatedAt: new Date(),
-  username: "exampleUsername",
 };
 const CREATE_RESULT = {
+  addressType: "exampleAddressType",
   createdAt: new Date(),
-  email: "exampleEmail",
-  emailVerifiedAt: new Date(),
-  firstName: "exampleFirstName",
+  customerId: "exampleCustomerId",
   id: "exampleId",
-  isActive: 42,
-  lastName: "exampleLastName",
-  name: "exampleName",
-  password: "examplePassword",
+  isDefault: 42,
+  title: "exampleTitle",
   updatedAt: new Date(),
-  username: "exampleUsername",
 };
 const FIND_MANY_RESULT = [
   {
+    addressType: "exampleAddressType",
     createdAt: new Date(),
-    email: "exampleEmail",
-    emailVerifiedAt: new Date(),
-    firstName: "exampleFirstName",
+    customerId: "exampleCustomerId",
     id: "exampleId",
-    isActive: 42,
-    lastName: "exampleLastName",
-    name: "exampleName",
-    password: "examplePassword",
+    isDefault: 42,
+    title: "exampleTitle",
     updatedAt: new Date(),
-    username: "exampleUsername",
   },
 ];
 const FIND_ONE_RESULT = {
+  addressType: "exampleAddressType",
   createdAt: new Date(),
-  email: "exampleEmail",
-  emailVerifiedAt: new Date(),
-  firstName: "exampleFirstName",
+  customerId: "exampleCustomerId",
   id: "exampleId",
-  isActive: 42,
-  lastName: "exampleLastName",
-  name: "exampleName",
-  password: "examplePassword",
+  isDefault: 42,
+  title: "exampleTitle",
   updatedAt: new Date(),
-  username: "exampleUsername",
 };
 
 const service = {
@@ -119,18 +103,18 @@ const aclValidateRequestInterceptor = {
   },
 };
 
-describe("User", () => {
+describe("Address", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         {
-          provide: UserService,
+          provide: AddressService,
           useValue: service,
         },
       ],
-      controllers: [UserController],
+      controllers: [AddressController],
       imports: [ACLModule],
     })
       .overrideGuard(DefaultAuthGuard)
@@ -147,36 +131,34 @@ describe("User", () => {
     await app.init();
   });
 
-  test("POST /users", async () => {
+  test("POST /addresses", async () => {
     await request(app.getHttpServer())
-      .post("/users")
+      .post("/addresses")
       .send(CREATE_INPUT)
       .expect(HttpStatus.CREATED)
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
-        emailVerifiedAt: CREATE_RESULT.emailVerifiedAt.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       });
   });
 
-  test("GET /users", async () => {
+  test("GET /addresses", async () => {
     await request(app.getHttpServer())
-      .get("/users")
+      .get("/addresses")
       .expect(HttpStatus.OK)
       .expect([
         {
           ...FIND_MANY_RESULT[0],
           createdAt: FIND_MANY_RESULT[0].createdAt.toISOString(),
-          emailVerifiedAt: FIND_MANY_RESULT[0].emailVerifiedAt.toISOString(),
           updatedAt: FIND_MANY_RESULT[0].updatedAt.toISOString(),
         },
       ]);
   });
 
-  test("GET /users/:id non existing", async () => {
+  test("GET /addresses/:id non existing", async () => {
     await request(app.getHttpServer())
-      .get(`${"/users"}/${nonExistingId}`)
+      .get(`${"/addresses"}/${nonExistingId}`)
       .expect(HttpStatus.NOT_FOUND)
       .expect({
         statusCode: HttpStatus.NOT_FOUND,
@@ -185,33 +167,31 @@ describe("User", () => {
       });
   });
 
-  test("GET /users/:id existing", async () => {
+  test("GET /addresses/:id existing", async () => {
     await request(app.getHttpServer())
-      .get(`${"/users"}/${existingId}`)
+      .get(`${"/addresses"}/${existingId}`)
       .expect(HttpStatus.OK)
       .expect({
         ...FIND_ONE_RESULT,
         createdAt: FIND_ONE_RESULT.createdAt.toISOString(),
-        emailVerifiedAt: FIND_ONE_RESULT.emailVerifiedAt.toISOString(),
         updatedAt: FIND_ONE_RESULT.updatedAt.toISOString(),
       });
   });
 
-  test("POST /users existing resource", async () => {
+  test("POST /addresses existing resource", async () => {
     const agent = request(app.getHttpServer());
     await agent
-      .post("/users")
+      .post("/addresses")
       .send(CREATE_INPUT)
       .expect(HttpStatus.CREATED)
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
-        emailVerifiedAt: CREATE_RESULT.emailVerifiedAt.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       })
       .then(function () {
         agent
-          .post("/users")
+          .post("/addresses")
           .send(CREATE_INPUT)
           .expect(HttpStatus.CONFLICT)
           .expect({

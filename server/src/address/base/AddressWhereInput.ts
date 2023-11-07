@@ -11,26 +11,39 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { JsonFilter } from "../../util/JsonFilter";
+import { AddressWhereUniqueInput } from "./AddressWhereUniqueInput";
+import { ValidateNested, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { AddressListRelationFilter } from "./AddressListRelationFilter";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
-import { DateTimeNullableFilter } from "../../util/DateTimeNullableFilter";
 import { StringFilter } from "../../util/StringFilter";
 import { IntNullableFilter } from "../../util/IntNullableFilter";
 
 @InputType()
-class UserWhereInput {
+class AddressWhereInput {
   @ApiProperty({
     required: false,
-    type: JsonFilter,
+    type: () => AddressWhereUniqueInput,
   })
-  @Type(() => JsonFilter)
+  @ValidateNested()
+  @Type(() => AddressWhereUniqueInput)
   @IsOptional()
-  @Field(() => JsonFilter, {
+  @Field(() => AddressWhereUniqueInput, {
     nullable: true,
   })
-  address?: JsonFilter;
+  address?: AddressWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => AddressListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => AddressListRelationFilter)
+  @IsOptional()
+  @Field(() => AddressListRelationFilter, {
+    nullable: true,
+  })
+  addresses?: AddressListRelationFilter;
 
   @ApiProperty({
     required: false,
@@ -41,18 +54,7 @@ class UserWhereInput {
   @Field(() => StringNullableFilter, {
     nullable: true,
   })
-  email?: StringNullableFilter;
-
-  @ApiProperty({
-    required: false,
-    type: DateTimeNullableFilter,
-  })
-  @Type(() => DateTimeNullableFilter)
-  @IsOptional()
-  @Field(() => DateTimeNullableFilter, {
-    nullable: true,
-  })
-  emailVerifiedAt?: DateTimeNullableFilter;
+  addressType?: StringNullableFilter;
 
   @ApiProperty({
     required: false,
@@ -63,7 +65,7 @@ class UserWhereInput {
   @Field(() => StringNullableFilter, {
     nullable: true,
   })
-  firstName?: StringNullableFilter;
+  customerId?: StringNullableFilter;
 
   @ApiProperty({
     required: false,
@@ -85,7 +87,7 @@ class UserWhereInput {
   @Field(() => IntNullableFilter, {
     nullable: true,
   })
-  isActive?: IntNullableFilter;
+  isDefault?: IntNullableFilter;
 
   @ApiProperty({
     required: false,
@@ -96,62 +98,7 @@ class UserWhereInput {
   @Field(() => StringNullableFilter, {
     nullable: true,
   })
-  lastName?: StringNullableFilter;
-
-  @ApiProperty({
-    required: false,
-    type: StringNullableFilter,
-  })
-  @Type(() => StringNullableFilter)
-  @IsOptional()
-  @Field(() => StringNullableFilter, {
-    nullable: true,
-  })
-  name?: StringNullableFilter;
-
-  @ApiProperty({
-    required: false,
-    type: JsonFilter,
-  })
-  @Type(() => JsonFilter)
-  @IsOptional()
-  @Field(() => JsonFilter, {
-    nullable: true,
-  })
-  permissions?: JsonFilter;
-
-  @ApiProperty({
-    required: false,
-    type: JsonFilter,
-  })
-  @Type(() => JsonFilter)
-  @IsOptional()
-  @Field(() => JsonFilter, {
-    nullable: true,
-  })
-  profile?: JsonFilter;
-
-  @ApiProperty({
-    required: false,
-    type: JsonFilter,
-  })
-  @Type(() => JsonFilter)
-  @IsOptional()
-  @Field(() => JsonFilter, {
-    nullable: true,
-  })
-  shopId?: JsonFilter;
-
-  @ApiProperty({
-    required: false,
-    type: StringFilter,
-  })
-  @Type(() => StringFilter)
-  @IsOptional()
-  @Field(() => StringFilter, {
-    nullable: true,
-  })
-  username?: StringFilter;
+  title?: StringNullableFilter;
 }
 
-export { UserWhereInput as UserWhereInput };
+export { AddressWhereInput as AddressWhereInput };
